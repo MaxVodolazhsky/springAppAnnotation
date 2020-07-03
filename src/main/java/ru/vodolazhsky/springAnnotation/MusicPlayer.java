@@ -1,13 +1,37 @@
 package ru.vodolazhsky.springAnnotation;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+@Component
+@Scope("singleton")
 public class MusicPlayer {
-    private List<Music> musicList = new ArrayList<Music>();
+    private Music music;
+    private Music music1;
 
+    @Value("${musicPlayer.name}")
     private String name;
+    @Value("${musicPlayer.volume}")
     private int volume;
+
+    @PostConstruct
+    public void initMethod() {
+        System.out.println("Init");
+    }
+
+    @PreDestroy
+    public void destroyMethod() {
+        System.out.println("Destroy");
+    }
 
     public String getName() {
         return name;
@@ -25,16 +49,22 @@ public class MusicPlayer {
         this.volume = volume;
     }
 
-
-    public MusicPlayer() { }
-
-    public void setMusicList(List<Music> music) {
-        this.musicList = music;
+    @Autowired
+    public MusicPlayer(@Qualifier("rockMusic") Music music, @Qualifier("classicalMusic") Music music1) {
+        this.music = music;
+        this.music1 = music1;
     }
 
-    public void playMusic() {
-        for(Music m : musicList) {
-            System.out.println("Playing: " + m.getSong());
+    public void playSong(MusicGenre musicGenre) {
+        Random random = new Random();
+        String song = null;
+        if (musicGenre.equals(MusicGenre.ROCK)) {
+            song = music.getSong().get(random.nextInt(3));
+            System.out.println(song);
+        }
+        if (musicGenre.equals(MusicGenre.CLASSICAL)) {
+            song = music1.getSong().get(random.nextInt(3));
+            System.out.println(song);
         }
     }
 }
