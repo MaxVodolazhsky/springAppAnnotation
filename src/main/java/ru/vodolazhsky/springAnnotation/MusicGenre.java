@@ -1,7 +1,15 @@
 package ru.vodolazhsky.springAnnotation;
 
-public enum MusicGenre {
-    CLASSICAL,
-    ROCK
+import java.util.ArrayList;
+import java.util.List;
+
+public class MusicGenre {
+    public List<String> list = new ArrayList<>();
+
+    public MusicGenre() {
+        list.add("Rock");
+        list.add("Electronic");
+        list.add("Classical");
+    }
 
 }
